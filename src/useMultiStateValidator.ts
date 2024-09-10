@@ -1,0 +1,98 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+// # `useMultiStateValidator`
+// 
+// Each time any of given states changes - validator function is invoked.  
+// 
+// ## Usage
+// ```ts 
+// import * as React from 'react';
+// import { useMultiStateValidator } from 'react-use';
+// 
+// const DemoStateValidator = (s: number[]) => [s.every((num: number) => !(num % 2))] as [boolean];
+// const Demo = () => {
+//   const [state1, setState1] = React.useState<number>(1);
+//   const [state2, setState2] = React.useState<number>(1);
+//   const [state3, setState3] = React.useState<number>(1);
+//   const [[isValid]] = useMultiStateValidator([state1, state2, state3], DemoStateValidator);
+// 
+//   return (
+//     <div>
+//       <div>Below fields will be valid if all of them is even</div>
+//       <input type="number" min="1" max="10" value={state1}
+//         onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
+//           setState1((ev.target.value as unknown) as number);
+//         }}
+//       />
+//       <input type="number" min="1" max="10" value={state2}
+//         onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
+//           setState2((ev.target.value as unknown) as number);
+//         }}
+//       />
+//       <input type="number" min="1" max="10" value={state3}
+//         onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
+//           setState3((ev.target.value as unknown) as number);
+//         }}
+//       />
+//       {isValid !== null && <span>{isValid ? 'Valid!' : 'Invalid'}</span>}
+//     </div>
+//   );
+// };
+// ```
+// 
+// ## Reference
+// ```ts 
+// const [validity, revalidate] = useStateValidator(
+//   state: any[] | { [p: string]: any } | { [p: number]: any },
+//   validator: (state, setValidity?)=>[boolean|null, ...any[]],
+//   initialValidity: any = [undefined]
+// );
+// ```
+// - **`state`**_`: any[] | { [p: string]: any } | { [p: number]: any }`_ can be both an array or object. It's _values_ will be used as a deps for inner `useEffect`.
+// - **`validity`**_`: [boolean|null, ...any[]]`_ result of validity check. First element is strictly nullable boolean, but others can contain arbitrary data;
+// - **`revalidate`**_`: ()=>void`_ runs validator once again
+// - **`validator`**_`: (state, setValidity?)=>[boolean|null, ...any[]]`_ should return an array suitable for validity state described above;
+//     - `states` - current states values as they've been passed to the hook;
+//     - `setValidity` - if defined hook will not trigger validity change automatically. Useful for async validators;
+// - `initialValidity` - validity value which set when validity is nt calculated yet;
+// 
+import { StateValidator, UseStateValidatorReturn, ValidityState } from './useStateValidator';
+
+export type MultiStateValidatorStates = any[] | { [p: string]: any } | { [p: number]: any };
+export type MultiStateValidator<V extends ValidityState, S extends MultiStateValidatorStates> =
+  StateValidator<V, S>;
+
+export function useMultiStateValidator<
+  V extends ValidityState,
+  S extends MultiStateValidatorStates
+>(
+  states: S,
+  validator: MultiStateValidator<V, S>,
+  initialValidity: V = [undefined] as V
+): UseStateValidatorReturn<V> {
+  if (typeof states !== 'object') {
+    throw new Error('states expected to be an object or array, got ' + typeof states);
+  }
+
+  const validatorInner = useRef(validator);
+  const statesInner = useRef(states);
+
+  validatorInner.current = validator;
+  statesInner.current = states;
+
+  const [validity, setValidity] = useState(initialValidity as V);
+
+  const validate = useCallback(() => {
+    if (validatorInner.current.length >= 2) {
+      validatorInner.current(statesInner.current, setValidity);
+    } else {
+      setValidity(validatorInner.current(statesInner.current));
+    }
+  }, [setValidity]);
+
+  useEffect(() => {
+    validate();
+  }, Object.values(states));
+
+  return [validity, validate];
+}
