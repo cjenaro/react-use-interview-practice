@@ -1,21 +1,21 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // # `useMultiStateValidator`
-// 
-// Each time any of given states changes - validator function is invoked.  
-// 
+//
+// Each time any of given states changes - validator function is invoked.
+//
 // ## Usage
-// ```ts 
+// ```ts
 // import * as React from 'react';
 // import { useMultiStateValidator } from 'react-use';
-// 
+//
 // const DemoStateValidator = (s: number[]) => [s.every((num: number) => !(num % 2))] as [boolean];
 // const Demo = () => {
 //   const [state1, setState1] = React.useState<number>(1);
 //   const [state2, setState2] = React.useState<number>(1);
 //   const [state3, setState3] = React.useState<number>(1);
 //   const [[isValid]] = useMultiStateValidator([state1, state2, state3], DemoStateValidator);
-// 
+//
 //   return (
 //     <div>
 //       <div>Below fields will be valid if all of them is even</div>
@@ -39,9 +39,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 //   );
 // };
 // ```
-// 
+//
 // ## Reference
-// ```ts 
+// ```ts
 // const [validity, revalidate] = useStateValidator(
 //   state: any[] | { [p: string]: any } | { [p: number]: any },
 //   validator: (state, setValidity?)=>[boolean|null, ...any[]],
@@ -55,12 +55,21 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 //     - `states` - current states values as they've been passed to the hook;
 //     - `setValidity` - if defined hook will not trigger validity change automatically. Useful for async validators;
 // - `initialValidity` - validity value which set when validity is nt calculated yet;
-// 
-import { StateValidator, UseStateValidatorReturn, ValidityState } from './useStateValidator';
+//
+import {
+  StateValidator,
+  UseStateValidatorReturn,
+  ValidityState,
+} from "./useStateValidator";
 
-export type MultiStateValidatorStates = any[] | { [p: string]: any } | { [p: number]: any };
-export type MultiStateValidator<V extends ValidityState, S extends MultiStateValidatorStates> =
-  StateValidator<V, S>;
+export type MultiStateValidatorStates =
+  | any[]
+  | { [p: string]: any }
+  | { [p: number]: any };
+export type MultiStateValidator<
+  V extends ValidityState,
+  S extends MultiStateValidatorStates
+> = StateValidator<V, S>;
 
 export function useMultiStateValidator<
   V extends ValidityState,
@@ -69,30 +78,4 @@ export function useMultiStateValidator<
   states: S,
   validator: MultiStateValidator<V, S>,
   initialValidity: V = [undefined] as V
-): UseStateValidatorReturn<V> {
-  if (typeof states !== 'object') {
-    throw new Error('states expected to be an object or array, got ' + typeof states);
-  }
-
-  const validatorInner = useRef(validator);
-  const statesInner = useRef(states);
-
-  validatorInner.current = validator;
-  statesInner.current = states;
-
-  const [validity, setValidity] = useState(initialValidity as V);
-
-  const validate = useCallback(() => {
-    if (validatorInner.current.length >= 2) {
-      validatorInner.current(statesInner.current, setValidity);
-    } else {
-      setValidity(validatorInner.current(statesInner.current));
-    }
-  }, [setValidity]);
-
-  useEffect(() => {
-    validate();
-  }, Object.values(states));
-
-  return [validity, validate];
-}
+): UseStateValidatorReturn<V> {}

@@ -1,28 +1,28 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 // # `useRafLoop`
-// 
+//
 // This hook call given function within the RAF loop without re-rendering parent component.
 // Loop stops automatically on component unmount.
-// 
+//
 // Additionally hook provides methods to start/stop loop and check current state.
-// 
+//
 // ## Usage
-// 
+//
 // ```jsx
 // import * as React from 'react';
 // import { useRafLoop, useUpdate } from 'react-use';
-// 
+//
 // const Demo = () => {
 //   const [ticks, setTicks] = React.useState(0);
 //   const [lastCall, setLastCall] = React.useState(0);
 //   const update = useUpdate();
-// 
+//
 //   const [loopStop, loopStart, isActive] = useRafLoop((time) => {
 //     setTicks(ticks => ticks + 1);
 //     setLastCall(time);
 //   });
-// 
+//
 //   return (
 //     <div>
 //       <div>RAF triggered: {ticks} (times)</div>
@@ -36,9 +36,9 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 //   );
 // };
 // ```
-// 
+//
 // ## Reference
-// 
+//
 // ```ts
 // const [stopLoop, startLoop, isActive] = useRafLoop(callback: FrameRequestCallback, initiallyActive = true);
 // ```
@@ -49,58 +49,12 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 //     * **`stopLoop`**_: `()=>void`_ &mdash; stop loop if it is active.
 //     * **`startLoop`**_: `()=>void`_ &mdash; start loop if it was inactive.
 //     * **`isActive`**_: `()=>boolean`_ &mdash; _true_ if loop is active.
-// 
-// 
+//
+//
 
 export type RafLoopReturns = [() => void, () => void, () => boolean];
 
 export default function useRafLoop(
   callback: FrameRequestCallback,
   initiallyActive = true
-): RafLoopReturns {
-  const raf = useRef<number | null>(null);
-  const rafActivity = useRef<boolean>(false);
-  const rafCallback = useRef(callback);
-  rafCallback.current = callback;
-
-  const step = useCallback((time: number) => {
-    if (rafActivity.current) {
-      rafCallback.current(time);
-      raf.current = requestAnimationFrame(step);
-    }
-  }, []);
-
-  const result = useMemo(
-    () =>
-      [
-        () => {
-          // stop
-          if (rafActivity.current) {
-            rafActivity.current = false;
-            raf.current && cancelAnimationFrame(raf.current);
-          }
-        },
-        () => {
-          // start
-          if (!rafActivity.current) {
-            rafActivity.current = true;
-            raf.current = requestAnimationFrame(step);
-          }
-        },
-        (): boolean => rafActivity.current, // isActive
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      ] as RafLoopReturns,
-    []
-  );
-
-  useEffect(() => {
-    if (initiallyActive) {
-      result[1]();
-    }
-
-    return result[0];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return result;
-}
+): RafLoopReturns {}

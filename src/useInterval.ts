@@ -1,27 +1,25 @@
-import { useEffect, useRef } from 'react';
-
 // # `useInterval`
-// 
+//
 // A declarative interval hook based on [Dan Abramov's article on overreacted.io](https://overreacted.io/making-setinterval-declarative-with-react-hooks). The interval can be paused by setting the delay to `null`.
-// 
+//
 // ## Usage
-// 
+//
 // ```jsx
 // import * as React from 'react';
 // import {useInterval} from 'react-use';
-// 
+//
 // const Demo = () => {
 //   const [count, setCount] = React.useState(0);
 //   const [delay, setDelay] = React.useState(1000);
 //   const [isRunning, toggleIsRunning] = useBoolean(true);
-// 
+//
 //   useInterval(
 //     () => {
 //       setCount(count + 1);
 //     },
 //     isRunning ? delay : null
 //   );
-// 
+//
 //   return (
 //     <div>
 //       <div>
@@ -35,29 +33,14 @@ import { useEffect, useRef } from 'react';
 //   );
 // };
 // ```
-// 
+//
 // ## Reference
-// 
+//
 // ```js
 // useInterval(callback, delay?: number)
 // ```
-// 
+//
 
-const useInterval = (callback: Function, delay?: number | null) => {
-  const savedCallback = useRef<Function>(() => {});
-
-  useEffect(() => {
-    savedCallback.current = callback;
-  });
-
-  useEffect(() => {
-    if (delay !== null) {
-      const interval = setInterval(() => savedCallback.current(), delay || 0);
-      return () => clearInterval(interval);
-    }
-
-    return undefined;
-  }, [delay]);
-};
+const useInterval = (callback: Function, delay?: number | null) => {};
 
 export default useInterval;

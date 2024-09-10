@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 // # `useIdle`
 //
 // React sensor hook that tracks if user on the page is idle.
@@ -31,8 +29,6 @@ import { useEffect, useState } from "react";
 // - `ms` &mdash; time in milliseconds after which to consider use idle, defaults to `60e3` &mdash; one minute.
 // - `initialState` &mdash; whether to consider user initially idle, defaults to false.
 //
-import { off, on } from "./misc/util";
-import { throttle } from "./misc/throttle";
 
 const defaultEvents = [
   "mousemove",
@@ -48,52 +44,6 @@ const useIdle = (
   ms: number = oneMinute,
   initialState: boolean = false,
   events: string[] = defaultEvents
-): boolean => {
-  const [state, setState] = useState<boolean>(initialState);
-
-  useEffect(() => {
-    let mounted = true;
-    let timeout: any;
-    let localState: boolean = state;
-    const set = (newState: boolean) => {
-      if (mounted) {
-        localState = newState;
-        setState(newState);
-      }
-    };
-
-    const onEvent = throttle(50, () => {
-      if (localState) {
-        set(false);
-      }
-
-      clearTimeout(timeout);
-      timeout = setTimeout(() => set(true), ms);
-    });
-    const onVisibility = () => {
-      if (!document.hidden) {
-        onEvent();
-      }
-    };
-
-    for (let i = 0; i < events.length; i++) {
-      on(window, events[i], onEvent);
-    }
-    on(document, "visibilitychange", onVisibility);
-
-    timeout = setTimeout(() => set(true), ms);
-
-    return () => {
-      mounted = false;
-
-      for (let i = 0; i < events.length; i++) {
-        off(window, events[i], onEvent);
-      }
-      off(document, "visibilitychange", onVisibility);
-    };
-  }, [ms, events]);
-
-  return state;
-};
+): boolean => {};
 
 export default useIdle;

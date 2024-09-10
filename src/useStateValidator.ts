@@ -1,20 +1,27 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 // # `useStateValidator`
-// 
+//
 // Each time given state changes - validator function is invoked.
-// 
+//
 // ## Usage
-// ```ts 
+// ```ts
 // import * as React from 'react';
 // import { useCallback } from 'react';
 // import { useStateValidator } from 'react-use';
-// 
+//
 // const DemoStateValidator = s => [s === '' ? null : (s * 1) % 2 === 0];
 // const Demo = () => {
 //   const [state, setState] = React.useState<string | number>(0);
 //   const [[isValid]] = useStateValidator(state, DemoStateValidator);
-// 
+//
 //   return (
 //     <div>
 //       <div>Below field is valid only if number is even</div>
@@ -32,9 +39,9 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } fr
 //   );
 // };
 // ```
-// 
+//
 // ## Reference
-// ```ts 
+// ```ts
 // const [validity, revalidate] = useStateValidator(
 //   state: any,
 //   validator: (state, setValidity?)=>[boolean|null, ...any[]],
@@ -47,7 +54,7 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } fr
 //     - `state` - current state;
 //     - `setValidity` - if defined hook will not trigger validity change automatically. Useful for async validators;
 // - `initialValidity` - validity value which set when validity is nt calculated yet;
-// 
+//
 
 export type ValidityState = [boolean | undefined, ...any[]] | [undefined];
 
@@ -63,26 +70,4 @@ export default function useStateValidator<V extends ValidityState, S>(
   state: S,
   validator: StateValidator<V, S>,
   initialState: V = [undefined] as V
-): UseStateValidatorReturn<V> {
-  const validatorInner = useRef(validator);
-  const stateInner = useRef(state);
-
-  validatorInner.current = validator;
-  stateInner.current = state;
-
-  const [validity, setValidity] = useState(initialState as V);
-
-  const validate = useCallback(() => {
-    if (validatorInner.current.length >= 2) {
-      validatorInner.current(stateInner.current, setValidity as Dispatch<SetStateAction<V>>);
-    } else {
-      setValidity(validatorInner.current(stateInner.current));
-    }
-  }, [setValidity]);
-
-  useEffect(() => {
-    validate();
-  }, [state]);
-
-  return [validity, validate];
-}
+): UseStateValidatorReturn<V> {}

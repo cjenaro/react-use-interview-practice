@@ -1,19 +1,19 @@
-import { DependencyList, useEffect } from 'react';
+import { DependencyList } from "react";
 
 // # `useDebounce`
-// 
+//
 // React hook that delays invoking a function until after wait milliseconds have elapsed since the last time the debounced function was invoked.
-// 
+//
 // The third argument is the array of values that the debounce depends on, in the same manner as useEffect. The debounce timeout will start when one of the values changes.
-// 
+//
 // ## Usage
-// 
+//
 // ```jsx
 // const Demo = () => {
 //   const [state, setState] = React.useState('Typing stopped');
 //   const [val, setVal] = React.useState('');
 //   const [debouncedValue, setDebouncedValue] = React.useState('');
-// 
+//
 //   const [, cancel] = useDebounce(
 //     () => {
 //       setState('Typing stopped');
@@ -22,7 +22,7 @@ import { DependencyList, useEffect } from 'react';
 //     2000,
 //     [val]
 //   );
-// 
+//
 //   return (
 //     <div>
 //       <input
@@ -43,16 +43,16 @@ import { DependencyList, useEffect } from 'react';
 //   );
 // };
 // ```
-// 
+//
 // ## Reference
-// 
+//
 // ```ts
 // const [
 //     isReady: () => boolean | null,
 //     cancel: () => void,
 // ] = useDebounce(fn: Function, ms: number, deps: DependencyList = []);
 // ```
-// 
+//
 // - **`fn`**_`: Function`_ - function that will be called;
 // - **`ms`**_`: number`_ - delay in milliseconds;
 // - **`deps`**_`: DependencyList`_ - array of values that the debounce depends on, in the same manner as useEffect;
@@ -61,8 +61,7 @@ import { DependencyList, useEffect } from 'react';
 //     - `true` - called
 //     - `null` - cancelled
 // - **`cancel`**_`: ()=>void`_ - cancel the debounce
-// 
-import useTimeoutFn from './useTimeoutFn';
+//
 
 export type UseDebounceReturn = [() => boolean | null, () => void];
 
@@ -70,10 +69,4 @@ export default function useDebounce(
   fn: Function,
   ms: number = 0,
   deps: DependencyList = []
-): UseDebounceReturn {
-  const [isReady, cancel, reset] = useTimeoutFn(fn, ms);
-
-  useEffect(reset, deps);
-
-  return [isReady, cancel];
-}
+): UseDebounceReturn {}

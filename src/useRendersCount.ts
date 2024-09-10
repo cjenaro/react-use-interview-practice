@@ -1,19 +1,19 @@
-import { useRef } from 'react';
+import { useRef } from "react";
 
 // # `useRendersCount`
-// 
+//
 // Tracks component's renders count including the first render.
-// 
+//
 // ## Usage
-// 
+//
 // ```typescript jsx
 // import * as React from 'react';
-// import { useRendersCount } from "react-use";  
-// 
+// import { useRendersCount } from "react-use";
+//
 // const Demo = () => {
 //   const update = useUpdate();
 //   const rendersCount = useRendersCount();
-// 
+//
 //   return (
 //     <div>
 //       <span>Renders count: {rendersCount}</span>
@@ -23,14 +23,12 @@ import { useRef } from 'react';
 //   );
 // };
 // ```
-// 
+//
 // ## Reference
-// 
+//
 // ```typescript
 // const rendersCount: number = useRendersCount();
 // ```
-// 
+//
 
-export function useRendersCount(): number {
-  return ++useRef(0).current;
-}
+export function useRendersCount(): number {}

@@ -1,22 +1,22 @@
-import { DependencyList, useCallback, useRef, useState } from 'react';
+import { DependencyList } from "react";
 
 // # `useAsyncFn`
-// 
+//
 // React hook that returns state and a callback for an `async` function or a
 // function that returns a promise. The state is of the same shape as `useAsync`.
-// 
+//
 // ## Usage
-// 
+//
 // ```jsx
 // import {useAsyncFn} from 'react-use';
-// 
+//
 // const Demo = ({url}) => {
 //   const [state, doFetch] = useAsyncFn(async () => {
 //     const response = await fetch(url);
 //     const result = await response.text();
 //     return result
 //   }, [url]);
-// 
+//
 //   return (
 //     <div>
 //       {state.loading
@@ -30,15 +30,14 @@ import { DependencyList, useCallback, useRef, useState } from 'react';
 //   );
 // };
 // ```
-// 
+//
 // ## Reference
-// 
+//
 // ```ts
 // useAsyncFn<Result, Args>(fn, deps?: any[], initialState?: AsyncState<Result>);
 // ```
-// 
-import useMountedState from './useMountedState';
-import { FunctionReturningPromise, PromiseType } from './misc/types';
+//
+import { FunctionReturningPromise, PromiseType } from "./misc/types";
 
 export type AsyncState<T> =
   | {
@@ -62,44 +61,15 @@ export type AsyncState<T> =
       value: T;
     };
 
-type StateFromFunctionReturningPromise<T extends FunctionReturningPromise> = AsyncState<
-  PromiseType<ReturnType<T>>
->;
+type StateFromFunctionReturningPromise<T extends FunctionReturningPromise> =
+  AsyncState<PromiseType<ReturnType<T>>>;
 
-export type AsyncFnReturn<T extends FunctionReturningPromise = FunctionReturningPromise> = [
-  StateFromFunctionReturningPromise<T>,
-  T
-];
+export type AsyncFnReturn<
+  T extends FunctionReturningPromise = FunctionReturningPromise
+> = [StateFromFunctionReturningPromise<T>, T];
 
 export default function useAsyncFn<T extends FunctionReturningPromise>(
   fn: T,
   deps: DependencyList = [],
   initialState: StateFromFunctionReturningPromise<T> = { loading: false }
-): AsyncFnReturn<T> {
-  const lastCallId = useRef(0);
-  const isMounted = useMountedState();
-  const [state, set] = useState<StateFromFunctionReturningPromise<T>>(initialState);
-
-  const callback = useCallback((...args: Parameters<T>): ReturnType<T> => {
-    const callId = ++lastCallId.current;
-
-    if (!state.loading) {
-      set((prevState) => ({ ...prevState, loading: true }));
-    }
-
-    return fn(...args).then(
-      (value) => {
-        isMounted() && callId === lastCallId.current && set({ value, loading: false });
-
-        return value;
-      },
-      (error) => {
-        isMounted() && callId === lastCallId.current && set({ error, loading: false });
-
-        return error;
-      }
-    ) as ReturnType<T>;
-  }, deps);
-
-  return [state, callback as unknown as T];
-}
+): AsyncFnReturn<T> {}
