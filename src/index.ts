@@ -36,7 +36,6 @@ export { default as useTimeoutFn } from "./useTimeoutFn";
 export { default as useTween } from "./useTween";
 export { default as useUpdate } from "./useUpdate";
 export { default as useUpdateEffect } from "./useUpdateEffect";
-export { default as useUpsert } from "./useUpsert";
 export { default as useStateValidator } from "./useStateValidator";
 export { useMultiStateValidator } from "./useMultiStateValidator";
 export { useRendersCount } from "./useRendersCount";

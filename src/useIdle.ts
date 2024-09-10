@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 // # `useIdle`
-// 
+//
 // React sensor hook that tracks if user on the page is idle.
-// 
-// 
+//
+//
 // ## Usage
-// 
+//
 // ```jsx
 // import {useIdle} from 'react-use';
-// 
+//
 // const Demo = () => {
 //   const isIdle = useIdle(3e3);
-// 
+//
 //   return (
 //     <div>
 //       <div>User is idle: {isIdle ? 'Yes 😴' : 'Nope'}</div>
@@ -20,21 +20,28 @@ import { useEffect, useState } from 'react';
 //   );
 // };
 // ```
-// 
-// 
+//
+//
 // ## Reference
-// 
+//
 // ```js
 // useIdle(ms, initialState);
 // ```
-// 
+//
 // - `ms` &mdash; time in milliseconds after which to consider use idle, defaults to `60e3` &mdash; one minute.
 // - `initialState` &mdash; whether to consider user initially idle, defaults to false.
-// 
-import { throttle } from 'throttle-debounce';
-import { off, on } from './misc/util';
+//
+import { off, on } from "./misc/util";
+import { throttle } from "./misc/throttle";
 
-const defaultEvents = ['mousemove', 'mousedown', 'resize', 'keydown', 'touchstart', 'wheel'];
+const defaultEvents = [
+  "mousemove",
+  "mousedown",
+  "resize",
+  "keydown",
+  "touchstart",
+  "wheel",
+];
 const oneMinute = 60e3;
 
 const useIdle = (
@@ -72,7 +79,7 @@ const useIdle = (
     for (let i = 0; i < events.length; i++) {
       on(window, events[i], onEvent);
     }
-    on(document, 'visibilitychange', onVisibility);
+    on(document, "visibilitychange", onVisibility);
 
     timeout = setTimeout(() => set(true), ms);
 
@@ -82,7 +89,7 @@ const useIdle = (
       for (let i = 0; i < events.length; i++) {
         off(window, events[i], onEvent);
       }
-      off(document, 'visibilitychange', onVisibility);
+      off(document, "visibilitychange", onVisibility);
     };
   }, [ms, events]);
 
