@@ -1,6 +1,6 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import { replaceRaf } from 'raf-stub';
-import useRaf from '../src/useRaf';
+import { act, renderHook } from "@testing-library/react";
+import { replaceRaf } from "raf-stub";
+import useRaf from "../src/useRaf";
 
 /**
  * New requestAnimationFrame after being replaced with raf-stub for testing purposes.
@@ -15,7 +15,7 @@ declare var requestAnimationFrame: RequestAnimationFrame;
 
 replaceRaf();
 const fixedStart = 1564949709496;
-const spyDateNow = jest.spyOn(Date, 'now').mockImplementation(() => fixedStart);
+const spyDateNow = jest.spyOn(Date, "now").mockImplementation(() => fixedStart);
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -27,14 +27,14 @@ afterEach(() => {
   requestAnimationFrame.reset();
 });
 
-it('should init percentage of time elapsed', () => {
+it("should init percentage of time elapsed", () => {
   const { result } = renderHook(() => useRaf());
   const timeElapsed = result.current;
 
   expect(timeElapsed).toBe(0);
 });
 
-it('should return corresponding percentage of time elapsed for default ms', () => {
+it("should return corresponding percentage of time elapsed for default ms", () => {
   const { result } = renderHook(() => useRaf());
   expect(result.current).toBe(0);
 
@@ -64,7 +64,7 @@ it('should return corresponding percentage of time elapsed for default ms', () =
   expect(result.current).toBe(1);
 });
 
-it('should return corresponding percentage of time elapsed for custom ms', () => {
+it("should return corresponding percentage of time elapsed for custom ms", () => {
   const customMs = 2000;
 
   const { result } = renderHook(() => useRaf(customMs));
@@ -96,7 +96,7 @@ it('should return corresponding percentage of time elapsed for custom ms', () =>
   expect(result.current).toBe(1);
 });
 
-it('should return always 1 after corresponding ms reached', () => {
+it("should return always 1 after corresponding ms reached", () => {
   const { result } = renderHook(() => useRaf());
   expect(result.current).toBe(0);
 
@@ -120,7 +120,7 @@ it('should return always 1 after corresponding ms reached', () => {
   expect(result.current).toBe(1);
 });
 
-it('should wait until delay reached to start calculating elapsed percentage', () => {
+it("should wait until delay reached to start calculating elapsed percentage", () => {
   const { result } = renderHook(() => useRaf(undefined, 500));
 
   expect(result.current).toBe(0);
@@ -141,8 +141,8 @@ it('should wait until delay reached to start calculating elapsed percentage', ()
   expect(result.current).not.toBe(0);
 });
 
-it('should clear pending timers on unmount', () => {
-  const spyRafStop = jest.spyOn(global, 'cancelAnimationFrame' as any);
+it("should clear pending timers on unmount", () => {
+  const spyRafStop = jest.spyOn(global, "cancelAnimationFrame" as any);
   const { unmount } = renderHook(() => useRaf());
 
   expect(clearTimeout).not.toHaveBeenCalled();

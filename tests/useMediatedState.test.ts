@@ -1,29 +1,32 @@
-import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
-import { Dispatch, SetStateAction } from 'react';
-import { useMediatedState } from '../src';
-import { StateMediator, UseMediatedStateReturn } from '../src/useMediatedState';
+import { act, renderHook, RenderHookResult } from "@testing-library/react";
+import { Dispatch, SetStateAction } from "react";
+import { useMediatedState } from "../src";
+import { StateMediator, UseMediatedStateReturn } from "../src/useMediatedState";
 
-describe('useMediatedState', () => {
-  it('should be defined', () => {
+describe("useMediatedState", () => {
+  it("should be defined", () => {
     expect(useMediatedState).toBeDefined();
   });
 
   function getHook(
     initialState: number = 2,
     fn: StateMediator<number> = jest.fn((newState) => newState / 2)
-  ): [jest.Mock | StateMediator, RenderHookResult<any, UseMediatedStateReturn<number>>] {
+  ): [
+    jest.Mock | StateMediator,
+    RenderHookResult<any, UseMediatedStateReturn<number>>
+  ] {
     return [fn, renderHook(() => useMediatedState<number>(fn, initialState))];
   }
 
-  it('should return array of two elements', () => {
+  it("should return array of two elements", () => {
     const [, hook] = getHook();
 
     expect(Array.isArray(hook.result.current)).toBe(true);
     expect(hook.result.current[0]).toBe(2);
-    expect(typeof hook.result.current[1]).toBe('function');
+    expect(typeof hook.result.current[1]).toBe("function");
   });
 
-  it('should act like regular useState but with mediator call on each setState', () => {
+  it("should act like regular useState but with mediator call on each setState", () => {
     const [spy, hook] = getHook();
 
     expect(hook.result.current[0]).toBe(2);
@@ -37,13 +40,13 @@ describe('useMediatedState', () => {
     expect(spy).toHaveBeenCalledTimes(2);
   });
 
-  it('should not call mediator on init', () => {
+  it("should not call mediator on init", () => {
     const [spy] = getHook();
 
     expect(spy).toHaveBeenCalledTimes(0);
   });
 
-  it('mediator should receive setState argument as first argument', () => {
+  it("mediator should receive setState argument as first argument", () => {
     let val;
     const spy = jest.fn((newState) => {
       val = newState;
@@ -56,10 +59,12 @@ describe('useMediatedState', () => {
     expect(hook.result.current[0]).toBe(6);
   });
 
-  it('if mediator expects 2 args, second should be a function setting the state', () => {
-    const spy = jest.fn((newState: number, setState: Dispatch<SetStateAction<number>>): void => {
-      setState(newState * 2);
-    }) as unknown as StateMediator<number>;
+  it("if mediator expects 2 args, second should be a function setting the state", () => {
+    const spy = jest.fn(
+      (newState: number, setState: Dispatch<SetStateAction<number>>): void => {
+        setState(newState * 2);
+      }
+    ) as unknown as StateMediator<number>;
     const [, hook] = getHook(1, spy);
 
     act(() => hook.result.current[1](3));

@@ -1,26 +1,26 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import { Subject } from 'rxjs';
-import * as useIsomorphicLayoutEffect from '../src/useIsomorphicLayoutEffect';
-import useObservable, { Observable } from '../src/useObservable';
+import { act, renderHook } from "@testing-library/react";
+import { Subject } from "rxjs";
+import * as useIsomorphicLayoutEffect from "../src/useIsomorphicLayoutEffect";
+import useObservable, { Observable } from "../src/useObservable";
 
 const setUp = (observable: Observable<any>, initialValue?: any) =>
   renderHook(() => useObservable(observable, initialValue));
 
-it('should init to initial value provided', () => {
+it("should init to initial value provided", () => {
   const subject$ = new Subject();
   const { result } = setUp(subject$, 123);
 
   expect(result.current).toBe(123);
 });
 
-it('should init to undefined if not initial value provided', () => {
+it("should init to undefined if not initial value provided", () => {
   const subject$ = new Subject();
   const { result } = setUp(subject$);
 
   expect(result.current).toBeUndefined();
 });
 
-it('should return latest value of observables', () => {
+it("should return latest value of observables", () => {
   const subject$ = new Subject();
   const { result } = setUp(subject$, 123);
 
@@ -36,9 +36,9 @@ it('should return latest value of observables', () => {
   expect(result.current).toBe(400);
 });
 
-it('should use layout effect to subscribe synchronously', async () => {
+it("should use layout effect to subscribe synchronously", async () => {
   const subject$ = new Subject();
-  const spy = jest.spyOn(useIsomorphicLayoutEffect, 'default');
+  const spy = jest.spyOn(useIsomorphicLayoutEffect, "default");
 
   expect(spy).toHaveBeenCalledTimes(0);
 
@@ -47,9 +47,9 @@ it('should use layout effect to subscribe synchronously', async () => {
   expect(spy).toHaveBeenCalledTimes(1);
 });
 
-it('should subscribe to observable only once', () => {
+it("should subscribe to observable only once", () => {
   const subject$ = new Subject();
-  const spy = jest.spyOn(subject$, 'subscribe');
+  const spy = jest.spyOn(subject$, "subscribe");
   expect(spy).not.toHaveBeenCalled();
 
   setUp(subject$, 123);
@@ -57,33 +57,33 @@ it('should subscribe to observable only once', () => {
   expect(spy).toHaveBeenCalledTimes(1);
 
   act(() => {
-    subject$.next('a');
+    subject$.next("a");
   });
 
   act(() => {
-    subject$.next('b');
+    subject$.next("b");
   });
 
   expect(spy).toHaveBeenCalledTimes(1);
 });
 
-it('should return updated value when observable changes', () => {
+it("should return updated value when observable changes", () => {
   const subject$ = new Subject();
   const { result } = setUp(subject$);
   expect(result.current).toBeUndefined();
 
   act(() => {
-    subject$.next('foo');
+    subject$.next("foo");
   });
-  expect(result.current).toBe('foo');
+  expect(result.current).toBe("foo");
 
   act(() => {
-    subject$.next('bar');
+    subject$.next("bar");
   });
-  expect(result.current).toBe('bar');
+  expect(result.current).toBe("bar");
 });
 
-it('should unsubscribe from observable', () => {
+it("should unsubscribe from observable", () => {
   const subject$ = new Subject();
   const unsubscribeMock = jest.fn();
   subject$.subscribe = jest.fn().mockReturnValue({
@@ -94,12 +94,12 @@ it('should unsubscribe from observable', () => {
   expect(unsubscribeMock).not.toHaveBeenCalled();
 
   act(() => {
-    subject$.next('foo');
+    subject$.next("foo");
   });
   expect(unsubscribeMock).not.toHaveBeenCalled();
 
   act(() => {
-    subject$.next('bar');
+    subject$.next("bar");
   });
   expect(unsubscribeMock).not.toHaveBeenCalled();
 

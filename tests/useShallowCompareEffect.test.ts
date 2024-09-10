@@ -1,6 +1,6 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { useShallowCompareEffect } from '../src';
-import { useEffect } from 'react';
+import { renderHook } from "@testing-library/react";
+import { useShallowCompareEffect } from "../src";
+import { useEffect } from "react";
 
 let options1 = { max: 10, range: { from: 0, to: 10 } };
 const options2 = { max: 10, range: { from: 0, to: 10 } };
@@ -9,7 +9,7 @@ const mockEffectShallow = jest.fn();
 const mockEffectCleanup = jest.fn();
 const mockEffectCallback = jest.fn().mockReturnValue(mockEffectCleanup);
 
-it('should shallow compare dependencies', () => {
+it("should shallow compare dependencies", () => {
   const { rerender: rerenderNormal } = renderHook(() =>
     useEffect(mockEffectNormal, [options1, options2])
   );
@@ -35,7 +35,7 @@ it('should shallow compare dependencies', () => {
   expect(mockEffectShallow).toHaveBeenCalledTimes(2);
 });
 
-it('should run clean-up provided on unmount', () => {
+it("should run clean-up provided on unmount", () => {
   const { unmount } = renderHook(() =>
     useShallowCompareEffect(mockEffectCallback, [options1, options2])
   );

@@ -1,9 +1,9 @@
-import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks';
-import { DependencyList } from 'react';
-import { UseDebounceReturn } from '../src/useDebounce';
-import { useDebounce } from '../src';
+import { act, renderHook, RenderHookResult } from "@testing-library/react";
+import { DependencyList } from "react";
+import { UseDebounceReturn } from "../src/useDebounce";
+import { useDebounce } from "../src";
 
-describe('useDebounce', () => {
+describe("useDebounce", () => {
   beforeAll(() => {
     jest.useFakeTimers();
   });
@@ -16,22 +16,25 @@ describe('useDebounce', () => {
     jest.useRealTimers();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(useDebounce).toBeDefined();
   });
 
-  it('should return two functions', () => {
+  it("should return two functions", () => {
     const hook = renderHook(() => useDebounce(() => {}, 5));
 
     expect(hook.result.current.length).toBe(2);
-    expect(typeof hook.result.current[0]).toBe('function');
-    expect(typeof hook.result.current[1]).toBe('function');
+    expect(typeof hook.result.current[0]).toBe("function");
+    expect(typeof hook.result.current[1]).toBe("function");
   });
 
   function getHook(
     ms: number = 5,
     dep: DependencyList = []
-  ): [jest.Mock, RenderHookResult<{ delay: number; deps: DependencyList }, UseDebounceReturn>] {
+  ): [
+    jest.Mock,
+    RenderHookResult<UseDebounceReturn, { delay: number; deps: DependencyList }>
+  ] {
     const spy = jest.fn();
     return [
       spy,
@@ -44,7 +47,7 @@ describe('useDebounce', () => {
     ];
   }
 
-  it('should call passed function after given amount of time', () => {
+  it("should call passed function after given amount of time", () => {
     const [spy] = getHook();
 
     expect(spy).not.toHaveBeenCalled();
@@ -52,7 +55,7 @@ describe('useDebounce', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it('should cancel function call on unmount', () => {
+  it("should cancel function call on unmount", () => {
     const [spy, hook] = getHook();
 
     expect(spy).not.toHaveBeenCalled();
@@ -61,7 +64,7 @@ describe('useDebounce', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('first function should return actual state of debounce', () => {
+  it("first function should return actual state of debounce", () => {
     let [, hook] = getHook();
     let [isReady] = hook.result.current;
 
@@ -75,7 +78,7 @@ describe('useDebounce', () => {
     expect(isReady()).toBe(true);
   });
 
-  it('second function should cancel debounce', () => {
+  it("second function should cancel debounce", () => {
     const [spy, hook] = getHook();
     const [isReady, cancel] = hook.result.current;
 
@@ -91,7 +94,7 @@ describe('useDebounce', () => {
     expect(isReady()).toBe(null);
   });
 
-  it('should reset timeout on delay change', () => {
+  it("should reset timeout on delay change", () => {
     const [spy, hook] = getHook(50);
 
     expect(spy).not.toHaveBeenCalled();
@@ -101,7 +104,7 @@ describe('useDebounce', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it('should reset timeout on deps change', () => {
+  it("should reset timeout on deps change", () => {
     const [spy, hook] = getHook(50, [5, 6]);
 
     jest.advanceTimersByTime(45);

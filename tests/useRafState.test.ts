@@ -1,6 +1,6 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import { replaceRaf } from 'raf-stub';
-import useRafState from '../src/useRafState';
+import { act, renderHook } from "@testing-library/react";
+import { replaceRaf } from "raf-stub";
+import useRafState from "../src/useRafState";
 
 interface RequestAnimationFrame {
   reset(): void;
@@ -19,12 +19,12 @@ afterEach(() => {
   requestAnimationFrame.reset();
 });
 
-describe('useRafState', () => {
-  it('should be defined', () => {
+describe("useRafState", () => {
+  it("should be defined", () => {
     expect(useRafState).toBeDefined();
   });
 
-  it('should only update state after requestAnimationFrame when providing an object', () => {
+  it("should only update state after requestAnimationFrame when providing an object", () => {
     const { result } = renderHook(() => useRafState(0));
 
     act(() => {
@@ -50,7 +50,7 @@ describe('useRafState', () => {
     expect(result.current[0]).toBe(4);
   });
 
-  it('should only update state after requestAnimationFrame when providing a function', () => {
+  it("should only update state after requestAnimationFrame when providing a function", () => {
     const { result } = renderHook(() => useRafState(0));
 
     act(() => {
@@ -70,9 +70,9 @@ describe('useRafState', () => {
     expect(result.current[0]).toBe(3);
   });
 
-  it('should cancel update state on unmount', () => {
+  it("should cancel update state on unmount", () => {
     const { unmount } = renderHook(() => useRafState(0));
-    const spyRafCancel = jest.spyOn(global, 'cancelAnimationFrame' as any);
+    const spyRafCancel = jest.spyOn(global, "cancelAnimationFrame" as any);
 
     expect(spyRafCancel).not.toHaveBeenCalled();
 

@@ -1,7 +1,7 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { useMethods } from '../src';
+import { renderHook, act } from "@testing-library/react";
+import { useMethods } from "../src";
 
-it('should have initialState value as the returned state value', () => {
+it("should have initialState value as the returned state value", () => {
   const initialState = {
     count: 10,
   };
@@ -15,7 +15,7 @@ it('should have initialState value as the returned state value', () => {
   expect(result.current[0]).toEqual(initialState);
 });
 
-it('should return wrappedMethods object containing all the methods defined in createMethods', () => {
+it("should return wrappedMethods object containing all the methods defined in createMethods", () => {
   const initialState = {
     count: 10,
   };
@@ -39,7 +39,7 @@ it('should return wrappedMethods object containing all the methods defined in cr
   }
 });
 
-it('should properly update the state based on the createMethods', () => {
+it("should properly update the state based on the createMethods", () => {
   const count = 10;
   const initialState = {
     count,

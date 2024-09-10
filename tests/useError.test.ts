@@ -1,18 +1,18 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { useError } from '../src';
+import { renderHook, act } from "@testing-library/react";
+import { useError } from "../src";
 
 const setup = () => renderHook(() => useError());
 
 beforeEach(() => {
-  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, "error").mockImplementation(() => {});
 });
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-it('should throw an error on error dispatch', () => {
-  const errorStr = 'some_error';
+it("should throw an error on error dispatch", () => {
+  const errorStr = "some_error";
 
   try {
     const { result } = setup();

@@ -1,5 +1,5 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { useInterval } from '../src';
+import { renderHook } from "@testing-library/react";
+import { useInterval } from "../src";
 
 let callback;
 
@@ -20,7 +20,7 @@ afterAll(() => {
   jest.useRealTimers();
 });
 
-it('should init hook with default delay', () => {
+it("should init hook with default delay", () => {
   const { result } = renderHook(() => useInterval(callback));
 
   expect(result.current).toBeUndefined();
@@ -29,7 +29,7 @@ it('should init hook with default delay', () => {
   expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 0);
 });
 
-it('should init hook with custom delay', () => {
+it("should init hook with custom delay", () => {
   const { result } = renderHook(() => useInterval(callback, 5000));
 
   expect(result.current).toBeUndefined();
@@ -37,7 +37,7 @@ it('should init hook with custom delay', () => {
   expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 5000);
 });
 
-it('should init hook without delay', () => {
+it("should init hook without delay", () => {
   const { result } = renderHook(() => useInterval(callback, null));
 
   expect(result.current).toBeUndefined();
@@ -45,7 +45,7 @@ it('should init hook without delay', () => {
   expect(setInterval).not.toHaveBeenCalled();
 });
 
-it('should repeatedly calls provided callback with a fixed time delay between each call', () => {
+it("should repeatedly calls provided callback with a fixed time delay between each call", () => {
   renderHook(() => useInterval(callback, 200));
   expect(callback).not.toHaveBeenCalled();
 
@@ -66,7 +66,7 @@ it('should repeatedly calls provided callback with a fixed time delay between ea
   expect(callback).toHaveBeenCalledTimes(5);
 });
 
-it('should clear interval on unmount', () => {
+it("should clear interval on unmount", () => {
   const { unmount } = renderHook(() => useInterval(callback, 200));
   const initialTimerCount = jest.getTimerCount();
   expect(clearInterval).not.toHaveBeenCalled();
@@ -77,7 +77,7 @@ it('should clear interval on unmount', () => {
   expect(jest.getTimerCount()).toBe(initialTimerCount - 1);
 });
 
-it('should handle new interval when delay is updated', () => {
+it("should handle new interval when delay is updated", () => {
   let delay = 200;
   const { rerender } = renderHook(() => useInterval(callback, delay));
   expect(callback).not.toHaveBeenCalled();
@@ -99,7 +99,7 @@ it('should handle new interval when delay is updated', () => {
   expect(callback).toHaveBeenCalledTimes(2);
 });
 
-it('should clear pending interval when delay is updated', () => {
+it("should clear pending interval when delay is updated", () => {
   let delay = 200;
   const { rerender } = renderHook(() => useInterval(callback, delay));
   expect(clearInterval).not.toHaveBeenCalled();

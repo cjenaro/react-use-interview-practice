@@ -1,7 +1,3 @@
-export { default as createMemo } from "./factory/createMemo";
-export { default as createReducerContext } from "./factory/createReducerContext";
-export { default as createReducer } from "./factory/createReducer";
-export { default as createStateContext } from "./factory/createStateContext";
 export { default as useAsync } from "./useAsync";
 export { default as useAsyncFn } from "./useAsyncFn";
 export { default as useAsyncRetry } from "./useAsyncRetry";
@@ -15,7 +11,6 @@ export { default as useIntersection } from "./useIntersection";
 export { default as useInterval } from "./useInterval";
 export { default as useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect";
 export { default as useKey } from "./useKey";
-export { default as createBreakpoint } from "./factory/createBreakpoint";
 export { default as useLongPress } from "./useLongPress";
 export { default as useMedia } from "./useMedia";
 export { useMediatedState } from "./useMediatedState";
